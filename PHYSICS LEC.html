@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impulse &amp; Momentum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #eef1ea;
+    --bg-alt: #e2e8dd;
+    --paper: #fbf9f2;
+    --ink: #17301f;
+    --ink-soft: #3f5c4b;
+    --line: #cbd3c3;
+    --momentum: #24657e;
+    --momentum-soft: #d7e6ea;
+    --impulse: #c97a24;
+    --impulse-soft: #f3e2c9;
+    --good: #2e7d4f;
+    --bad: #b9432f;
+    --shadow: 0 1px 0 rgba(23,48,31,0.06), 0 8px 24px rgba(23,48,31,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px;}
+  a{color:var(--momentum);}
+
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(251,249,242,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .wrap{display:flex; align-items:center; gap:6px; padding:10px 24px; overflow-x:auto;}
+  nav .brand{
+    font-family:'Fraunces', serif; font-weight:700; font-size:15px;
+    margin-right:14px; white-space:nowrap; color:var(--ink);
+  }
+  nav a.tab{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px; letter-spacing:0.03em; text-transform:uppercase;
+    color:var(--ink-soft); text-decoration:none;
+    padding:7px 11px; border-radius:20px; white-space:nowrap;
+    border:1px solid transparent;
+  }
+  nav a.tab:hover{border-color:var(--line); background:var(--bg-alt);}
+
+  header.hero{padding:64px 0 40px; border-bottom:1px solid var(--line);}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--impulse); font-weight:700; margin-bottom:14px;
+  }
+  h1.title{
+    font-family:'Fraunces', serif; font-weight:700; font-size:clamp(38px,6vw,64px);
+    line-height:1.02; margin:0 0 18px; letter-spacing:-0.01em;
+  }
+  h1.title em{font-style:italic; font-weight:500; color:var(--momentum);}
+  .lede{font-size:17px; line-height:1.6; color:var(--ink-soft); max-width:56ch; margin:0 0 8px;}
+
+  section{padding:56px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .kicker{
+    font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--momentum); font-weight:700; margin-bottom:10px;
+  }
+  .kicker.impulse-flavor{color:var(--impulse);}
+  h2{font-family:'Fraunces', serif; font-weight:600; font-size:clamp(26px,4vw,36px); margin:0 0 14px;}
+  p.body-text{font-size:15.5px; line-height:1.7; color:var(--ink-soft); max-width:70ch;}
+  .formula{
+    font-family:'JetBrains Mono', monospace; font-size:22px; font-weight:700;
+    color:var(--ink); background:var(--paper); border:1px solid var(--line);
+    display:inline-block; padding:10px 20px; border-radius:8px; margin:14px 0;
+    box-shadow:var(--shadow);
+  }
+
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:14px;
+    padding:26px; box-shadow:var(--shadow);
+  }
+  .card.compact{max-width:912px; margin-left:auto; margin-right:auto;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:760px){ .grid2{grid-template-columns:1fr;} }
+
+  .control{margin-bottom:18px;}
+  .control label{
+    display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; color:var(--ink-soft); margin-bottom:6px;
+  }
+  .control label span.val{color:var(--ink); font-weight:700;}
+  input[type=range]{
+    width:100%; -webkit-appearance:none; height:6px; border-radius:4px;
+    background:var(--line); outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--momentum); border:3px solid var(--paper); box-shadow:0 0 0 1px var(--momentum); cursor:pointer;
+  }
+  input[type=range].imp::-webkit-slider-thumb{background:var(--impulse); box-shadow:0 0 0 1px var(--impulse);}
+  input[type=range]::-moz-range-thumb{
+    width:18px; height:18px; border-radius:50%; background:var(--momentum); border:3px solid var(--paper); cursor:pointer;
+  }
+
+  .readout{display:flex; gap:14px; flex-wrap:wrap; margin-top:18px;}
+  .pill{
+    background:var(--momentum-soft); color:var(--momentum); border-radius:10px;
+    padding:12px 16px; font-family:'JetBrains Mono', monospace; min-width:130px;
+  }
+  .pill.imp{background:var(--impulse-soft); color:#8a5416;}
+  .pill .lbl{font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; opacity:0.75; display:block; margin-bottom:4px;}
+  .pill .num{font-size:19px; font-weight:700;}
+
+  svg{display:block; width:100%; height:auto;}
+  .note{
+    font-size:13px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace;
+    border-left:3px solid var(--impulse); padding-left:12px; margin-top:16px; line-height:1.6;
+  }
+
+  .subhead{font-family:'Fraunces', serif; font-weight:600; font-size:19px; margin:34px 0 4px;}
+  .subhead-note{font-size:13.5px; color:var(--ink-soft); margin:0 0 14px; max-width:64ch;}
+  .run-btn{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:12.5px;
+    padding:9px 16px; border-radius:8px; border:1px solid var(--momentum); background:var(--momentum-soft);
+    color:var(--momentum); cursor:pointer; margin-top:6px;
+  }
+  .run-btn:hover{background:var(--momentum); color:#fff;}
+
+  .gauge-wrap{margin-top:14px;}
+  .gauge-label{display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-soft); margin-bottom:5px;}
+  .gauge{height:14px; background:var(--bg-alt); border-radius:8px; overflow:hidden; border:1px solid var(--line);}
+  .gauge-fill{height:100%; width:10%; background:var(--good); border-radius:8px; transition:width .25s ease, background .25s ease;}
+  .gauge-scale{display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--ink-soft); margin-top:4px;}
+
+  .e-track{position:relative; height:34px; margin-top:8px;}
+  .e-line{position:absolute; top:14px; left:0; right:0; height:4px; background:var(--line); border-radius:3px;}
+  .e-dot{position:absolute; top:6px; width:20px; height:20px; border-radius:50%; background:var(--impulse); border:3px solid var(--paper); box-shadow:0 0 0 1.5px var(--impulse); transform:translateX(-50%); transition:left .1s ease;}
+  .e-zones{display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--ink-soft); margin-top:6px;}
+
+  .type-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;}
+  @media (max-width:760px){ .type-grid{grid-template-columns:1fr;} }
+
+  #quiz-intro{text-align:center;}
+  .quiz-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'JetBrains Mono', monospace; font-size:12.5px; color:var(--ink-soft);
+    margin-bottom:12px;
+  }
+  .progress-bar{height:6px; background:var(--bg-alt); border-radius:4px; overflow:hidden; margin-bottom:26px;}
+  .progress-fill{height:100%; background:var(--momentum); width:0%; transition:width .3s ease;}
+  .q-title{font-family:'Fraunces', serif; font-size:20px; font-weight:600; margin:0 0 20px; line-height:1.4;}
+  .option{
+    display:block; width:100%; text-align:left; background:var(--paper); border:1.5px solid var(--line);
+    border-radius:10px; padding:13px 16px; margin-bottom:10px; font-size:14.5px; color:var(--ink);
+    cursor:pointer; font-family:'Inter',sans-serif; transition:all .12s ease;
+  }
+  .option:hover{border-color:var(--momentum);}
+  .option.correct{background:#e5f3ea; border-color:var(--good); color:#1c5c37;}
+  .option.incorrect{background:#fbeae6; border-color:var(--bad); color:#8f2f1f;}
+  .option:disabled{cursor:default;}
+  .explain{
+    font-size:13.5px; color:var(--ink-soft); background:var(--bg-alt); border-radius:8px;
+    padding:12px 14px; margin-top:6px; display:none;
+  }
+  .quiz-nav{display:flex; justify-content:space-between; margin-top:22px;}
+  .btn{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:13px;
+    padding:11px 20px; border-radius:9px; border:none; cursor:pointer;
+    background:var(--ink); color:var(--paper);
+  }
+  .btn:disabled{opacity:0.35; cursor:not-allowed;}
+  .btn.ghost{background:transparent; color:var(--ink-soft); border:1px solid var(--line);}
+  #quiz-result{text-align:center; padding:20px 0;}
+  #quiz-result .score{font-family:'Fraunces',serif; font-size:52px; font-weight:700; color:var(--momentum);}
+  #quiz-result .verdict{font-size:15px; color:var(--ink-soft); margin-top:6px;}
+  #review-list{margin-top:26px; text-align:left;}
+  .review-item{border-bottom:1px solid var(--line); padding:14px 0;}
+  .review-item .tag{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; margin-right:8px;}
+  .tag.ok{background:#e5f3ea; color:var(--good);}
+  .tag.no{background:#fbeae6; color:var(--bad);}
+
+  footer{padding:36px 0 60px; text-align:center; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">J = Δp</span>
+    <a class="tab" href="#hero">Intro</a>
+    <a class="tab" href="#momentum">Momentum</a>
+    <a class="tab" href="#impulse">Impulse</a>
+    <a class="tab" href="#theorem">Theorem</a>
+    <a class="tab" href="#quiz">Quiz</a>
+  </div>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="wrap">
+    <div class="eyebrow">GED0081 · College Physics 1</div>
+    <h1 class="title">Impulse and Momentum</h1>
+    <p class="lede">A reviewer of impulse and momentum. drag the sliders, then test yourself with a 20-question quiz.</p>
+  </div>
+</header>
+
+<!-- MOMENTUM -->
+<section id="momentum">
+  <div class="wrap">
+    <div class="kicker">01 · Moving inertia</div>
+    <h2>Momentum</h2>
+    <p class="body-text">Momentum is a quantity that <strong>describes an object's resistance to stopping</strong> (a kind of"moving inertia").</p>
+    <p class="body-text">It is represented by the symbol <strong>p (boldface) with a unit of kilogram-meter per second.</strong>
+    <p class="body-text">It is the <strong>product</strong> of an object's mass and velocity.</p>
+    <p class="body-text">It is a <strong>vector quantity</strong></p>
+    <div class="grid2">
+      <div class="card">
+        <div class="control">
+          <label>Mass (kg) <span class="val" id="mMassVal">0.45</span></label>
+          <input type="range" id="mMass" min="0.1" max="4000" value="0.45" step="0.1">
+        </div>
+        <div class="control">
+          <label>Velocity (m/s) <span class="val" id="mVelVal">25</span></label>
+          <input type="range" id="mVel" min="0" max="40" value="25" step="0.5">
+        </div>
+        <div class="readout">
+          <div class="pill"><span class="lbl">Momentum</span><span class="num" id="mResult">11.3 kg·m/s</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 320 160" id="momArrowSvg">
+          <line x1="20" y1="80" x2="300" y2="80" stroke="var(--line)" stroke-width="1"/>
+          <circle id="mBall" cx="60" cy="80" r="14" fill="var(--momentum)"/>
+          <line id="mArrow" x1="60" y1="80" x2="220" y2="80" stroke="var(--momentum)" stroke-width="4" marker-end="url(#arrowHead)"/>
+          <defs>
+            <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" fill="var(--momentum)"/>
+            </marker>
+          </defs>
+          <text x="60" y="130" font-family="JetBrains Mono" font-size="11" fill="var(--ink-soft)">Arrow length ∝ momentum. Longer arrow, harder to stop.</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="subhead">Real life: how far does it take to stop?</div>
+    <p class="subhead-note">Apply the <em>same</em> braking force to whatever you picked above and watch how far and how long it takes to stop. Heavier or faster objects need more room to halt under identical braking force.</p>
+    <div class="card compact">
+      <div class="grid2">
+        <div>
+          <div class="control">
+            <label>Braking force (N) <span class="val" id="sdForceVal">300</span></label>
+            <input type="range" id="sdForce" min="20" max="4000" value="300" step="10">
+          </div>
+          <div class="readout">
+            <div class="pill"><span class="lbl">Stopping time</span><span class="num" id="sdTime">0.04 s</span></div>
+            <div class="pill"><span class="lbl">Stopping distance</span><span class="num" id="sdDistance">0.5 m</span></div>
+          </div>
+          <button class="run-btn" id="sdRunBtn">▶ Watch it slide to a stop</button>
+        </div>
+        <svg viewBox="0 0 320 130" id="stopTrackSvg">
+          <line x1="30" y1="90" x2="290" y2="90" stroke="var(--line)" stroke-width="2"/>
+          <line id="sdStopMarker" x1="290" y1="60" x2="290" y2="120" stroke="var(--impulse)" stroke-width="2" stroke-dasharray="3 3"/>
+          <circle id="sdBall" cx="40" cy="90" r="10" fill="var(--momentum)"/>
+          <text x="30" y="115" font-family="JetBrains Mono" font-size="10" fill="var(--ink-soft)">start</text>
+          <text id="sdMarkerLabel" x="290" y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="var(--impulse)">stop</text>
+        </svg>
+      </div>
+      <p class="note">Note: it's the <em>stopping time</em> that's exactly proportional to momentum (t = p ÷ F, straight from the impulse-momentum theorem). Stopping <em>distance</em> follows from that same physics.</p>
+    </div>
+  </div>
+</section>
+
+<!-- IMPULSE -->
+<section id="impulse">
+  <div class="wrap">
+    <div class="kicker impulse-flavor">02 · Moving force</div>
+    <h2>Impulse</h2>
+    <p class="body-text">It is a vector quantity that describes the <strong> effect of a net force acting on an object </strong>(a kind of "moving force").</p>
+    <p class="body-text">Impulse is represented by the symbol <strong>J (boldface) with a unit of Newton-second.</strong></p>
+    <p class="body-text">It is mathematically defined as the <strong>product of the average net force acting on an object and its duration.</strong></p>
+    <div class="formula">J = F·Δt</div>
+
+    <div class="grid2">
+      <div class="card">
+        <div class="control">
+          <label>Force (N) <span class="val" id="iForceVal">400</span></label>
+          <input type="range" class="imp" id="iForce" min="10" max="2000" value="400" step="10">
+        </div>
+        <div class="control">
+          <label>Duration Δt (s) <span class="val" id="iTimeVal">0.10</span></label>
+          <input type="range" class="imp" id="iTime" min="0.01" max="1" value="0.10" step="0.01">
+        </div>
+        <div class="readout">
+          <div class="pill imp"><span class="lbl">Impulse</span><span class="num" id="iResult">40 N·s</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 320 170" id="impGraphSvg">
+          <line x1="30" y1="140" x2="300" y2="140" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <line x1="30" y1="140" x2="30" y2="20" stroke="var(--ink-soft)" stroke-width="1.5"/>
+          <text x="150" y="160" font-family="JetBrains Mono" font-size="11" fill="var(--ink-soft)">Time (s)</text>
+          <text x="6" y="30" font-family="JetBrains Mono" font-size="11" fill="var(--ink-soft)">F (N)</text>
+          <rect id="impRect" x="30" y="120" width="30" height="20" fill="var(--impulse-soft)" stroke="var(--impulse)" stroke-width="1.5"/>
+          <text x="150" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="var(--impulse)" font-weight="700">Impulse = shaded area</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="subhead">Real life: same impulse, different sting</div>
+    <p class="subhead-note">Catching a ball always absorbs the <em>same</em> impulse for a given speed the ball's momentum has to drop to zero either way. What changes is how long you take to do it, which changes the <em>force</em> your hand feels.</p>
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <div class="control">
+            <label>Incoming pitch speed (m/s) <span class="val" id="catchVelVal">20</span></label>
+            <input type="range" class="imp" id="catchVel" min="5" max="40" value="20" step="1">
+          </div>
+          <div class="control">
+            <label>Stopping time — bare hand to padded mitt (s) <span class="val" id="catchDtVal">0.02</span></label>
+            <input type="range" class="imp" id="catchDt" min="0.01" max="0.4" value="0.02" step="0.01">
+          </div>
+          <p class="note" style="margin-top:10px;">0.145-kg baseball</p>
+        </div>
+        <div class="readout" style="align-content:flex-start;">
+          <div class="pill imp"><span class="lbl">Impulse needed</span><span class="num" id="catchImpulse">2.90 N·s</span></div>
+          <div class="pill imp"><span class="lbl">Average force</span><span class="num" id="catchForce">145 N</span></div>
+        </div>
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-label"><span>Force on your hand</span><span id="catchForceLabel">gentle</span></div>
+        <div class="gauge"><div class="gauge-fill" id="catchGaugeFill"></div></div>
+        <div class="gauge-scale"><span>gentle</span><span>firm</span><span>stinging</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THEOREM -->
+<section id="theorem">
+  <div class="wrap">
+    <div class="kicker">03 · The link</div>
+    <h2>Impulse–Momentum Theorem</h2>
+    <p class="body-text">Momentum's unit (kg·m/s) and impulse's unit (N·s) are dimensionally identical — that's the tell that they're related. Starting from Newton's second law <em>F = ma</em> and substituting <em>a = Δv/t</em>, the impulse an object receives always equals its change in momentum.</p>
+    <div class="formula">J = mΔv = Δp</div>
+
+    <div class="card" style="margin-top:22px;">
+      <p class="body-text" style="margin-top:0;">Try it: pick a force and duration, and a mass — watch the resulting velocity change come out consistent every time.</p>
+      <div class="grid2">
+        <div>
+          <div class="control">
+            <label>Force (N) <span class="val" id="tForceVal">100</span></label>
+            <input type="range" class="imp" id="tForce" min="10" max="1000" value="100" step="10">
+          </div>
+          <div class="control">
+            <label>Time Δt (s) <span class="val" id="tTimeVal">2.0</span></label>
+            <input type="range" class="imp" id="tTime" min="0.1" max="5" value="2.0" step="0.1">
+          </div>
+          <div class="control">
+            <label>Mass (kg) <span class="val" id="tMassVal">50</span></label>
+            <input type="range" id="tMass" min="1" max="200" value="50">
+          </div>
+        </div>
+        <div class="readout" style="align-content:flex-start;">
+          <div class="pill imp"><span class="lbl">Impulse J = FΔt</span><span class="num" id="tImpulse">200 N·s</span></div>
+          <div class="pill"><span class="lbl">Δv = J / m</span><span class="num" id="tDeltaV">4.00 m/s</span></div>
+          <div class="pill"><span class="lbl">Δp = mΔv</span><span class="num" id="tDeltaP">200 kg·m/s</span></div>
+        </div>
+      </div>
+      <p class="note" id="theoremCheck">✓ J and Δp match — the theorem holds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="kicker">04 · Check yourself</div>
+    <h2>20-Question Quiz</h2>
+
+    <div id="quiz-intro" class="card">
+      <p class="body-text" style="margin:0 0 18px;">Each attempt draws 20 randomized questions from a 30-question pool covering the momentum, impulse, braking, catching, force–time graph, and impulse–momentum concepts taught above.</p>
+      <button class="btn" id="startQuizBtn">Start quiz</button>
+    </div>
+
+    <div id="quiz-body" class="card" style="display:none;">
+      <div class="quiz-meta">
+        <span id="quizProgressText">Question 1 / 20</span>
+        <span id="quizScoreText">Score: 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="q-title" id="qTitle"></div>
+      <div id="qOptions"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="quiz-nav">
+        <button class="btn ghost" id="quitBtn">Exit quiz</button>
+        <button class="btn" id="nextBtn" disabled>Next question</button>
+      </div>
+    </div>
+
+    <div id="quiz-result" class="card" style="display:none;">
+      <div class="score" id="finalScore">0 / 20</div>
+      <div class="verdict" id="finalVerdict"></div>
+      <button class="btn" id="retryBtn" style="margin-top:18px;">Retake quiz</button>
+      <div id="review-list"></div>
+    </div>
+  </div>
+</section>
+
+<footer>Impulse &amp; Momentum · Field Notes 8.1 — built for review, not for grading.</footer>
+
+<script>
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function fmtNum(n, digits){
+  return n.toLocaleString(undefined,{maximumFractionDigits: digits===undefined?1:digits});
+}
+// Wires an <input type=range> (and any number of dependents) to a callback,
+// firing once immediately so the UI starts in sync.
+function bindSliders(ids, callback){
+  const els = ids.map(id => document.getElementById(id));
+  els.forEach(el => el.addEventListener('input', callback));
+  callback();
+  return els;
+}
+
+/* ============================================================
+   MOMENTUM — p = m·v, plus a real-life stopping-distance demo
+   ============================================================ */
+
+const mMass = document.getElementById('mMass');
+const mVel = document.getElementById('mVel');
+const mMassVal = document.getElementById('mMassVal');
+const mVelVal = document.getElementById('mVelVal');
+const mResult = document.getElementById('mResult');
+const mArrow = document.getElementById('mArrow');
+const mBall = document.getElementById('mBall');
+
+// -- Stopping distance / time simulator (declared before use below) --
+const sdForce = document.getElementById('sdForce');
+const sdForceVal = document.getElementById('sdForceVal');
+const sdTime = document.getElementById('sdTime');
+const sdDistance = document.getElementById('sdDistance');
+const sdBall = document.getElementById('sdBall');
+const sdStopMarker = document.getElementById('sdStopMarker');
+const sdMarkerLabel = document.getElementById('sdMarkerLabel');
+const sdRunBtn = document.getElementById('sdRunBtn');
+
+function updateMomentum(){
+  const m = parseFloat(mMass.value);
+  const v = parseFloat(mVel.value);
+  mMassVal.textContent = fmtNum(m, m<10?2:0);
+  mVelVal.textContent = fmtNum(v,1);
+  const p = m*v;
+  mResult.textContent = fmtNum(p, p<100?1:0) + ' kg·m/s';
+  mArrow.setAttribute('x2', 60 + Math.min(230, 20 + (v/40)*210));
+  mBall.setAttribute('r', Math.min(28, 8 + Math.min(1,m/1500)*24));
+  updateStopping();
+}
+bindSliders(['mMass','mVel'], updateMomentum);
+
+function scaledTrackX(distance){
+  const trackStart = 40, trackEnd = 280;
+  const norm = Math.min(1, Math.sqrt(Math.max(0,distance)) / Math.sqrt(500));
+  return trackStart + norm*(trackEnd-trackStart);
+}
+
+function updateStopping(){
+  const m = parseFloat(mMass.value);
+  const v = parseFloat(mVel.value);
+  const F = parseFloat(sdForce.value);
+  sdForceVal.textContent = F;
+  if(v<=0){
+    sdTime.textContent = '0.00 s'; sdDistance.textContent = '0.0 m';
+    sdStopMarker.setAttribute('x1',40); sdStopMarker.setAttribute('x2',40);
+    sdMarkerLabel.setAttribute('x',40);
+    sdBall.dataset.target = 40;
+    return;
+  }
+  const a = F/m;
+  const t = v/a;
+  const d = (v*v)/(2*a);
+  sdTime.textContent = fmtNum(t, t<10?2:0) + ' s';
+  sdDistance.textContent = fmtNum(d, d<10?1:0) + ' m';
+  const x = scaledTrackX(d);
+  sdStopMarker.setAttribute('x1', x); sdStopMarker.setAttribute('x2', x);
+  sdMarkerLabel.setAttribute('x', x);
+  sdBall.dataset.target = x;
+}
+sdForce.addEventListener('input', updateStopping);
+
+function animateStoppingSlide(){
+  const start = 40;
+  const target = parseFloat(sdBall.dataset.target || 40);
+  const duration = 1400;
+  const t0 = performance.now();
+  function step(now){
+    const p = Math.min(1, (now-t0)/duration);
+    const eased = 1 - Math.pow(1-p, 3);
+    sdBall.setAttribute('cx', start + (target-start)*eased);
+    if(p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+sdRunBtn.addEventListener('click', animateStoppingSlide);
+updateStopping();
+
+/* ============================================================
+   IMPULSE — J = F·Δt, plus a real-life "catching" demo
+   ============================================================ */
+const iForce = document.getElementById('iForce');
+const iTime = document.getElementById('iTime');
+const iForceVal = document.getElementById('iForceVal');
+const iTimeVal = document.getElementById('iTimeVal');
+const iResult = document.getElementById('iResult');
+const impRect = document.getElementById('impRect');
+
+function updateImpulse(){
+  const F = parseFloat(iForce.value);
+  const t = parseFloat(iTime.value);
+  iForceVal.textContent = F;
+  iTimeVal.textContent = t.toFixed(2);
+  const J = F*t;
+  iResult.textContent = fmtNum(J,1) + ' N·s';
+  impRect.setAttribute('width', 10 + t*250);
+  const h = 5 + (F/2000)*110;
+  impRect.setAttribute('height', h);
+  impRect.setAttribute('y', 140-h);
+}
+bindSliders(['iForce','iTime'], updateImpulse);
+
+const CATCH_BALL_MASS = 0.145; // kg, baseball
+
+const catchVel = document.getElementById('catchVel');
+const catchVelVal = document.getElementById('catchVelVal');
+const catchDt = document.getElementById('catchDt');
+const catchDtVal = document.getElementById('catchDtVal');
+const catchImpulse = document.getElementById('catchImpulse');
+const catchForce = document.getElementById('catchForce');
+const catchGaugeFill = document.getElementById('catchGaugeFill');
+const catchForceLabel = document.getElementById('catchForceLabel');
+
+function updateCatch(){
+  const v = parseFloat(catchVel.value);
+  const dt = parseFloat(catchDt.value);
+  catchVelVal.textContent = v;
+  catchDtVal.textContent = dt.toFixed(2);
+  const J = CATCH_BALL_MASS * v;
+  const F = J / dt;
+  catchImpulse.textContent = J.toFixed(2) + ' N·s';
+  catchForce.textContent = F.toFixed(0) + ' N';
+  const pct = Math.min(100, (F/1200)*100);
+  catchGaugeFill.style.width = pct + '%';
+  let color, label;
+  if(pct > 70){ color = 'var(--bad)'; label = 'stinging'; }
+  else if(pct > 35){ color = 'var(--impulse)'; label = 'firm'; }
+  else { color = 'var(--good)'; label = 'gentle'; }
+  catchGaugeFill.style.background = color;
+  catchForceLabel.textContent = label;
+}
+bindSliders(['catchVel','catchDt'], updateCatch);
+
+/* ============================================================
+   THEOREM — J = mΔv = Δp
+   ============================================================ */
+const tForce = document.getElementById('tForce');
+const tTime = document.getElementById('tTime');
+const tMass = document.getElementById('tMass');
+const tForceVal = document.getElementById('tForceVal');
+const tTimeVal = document.getElementById('tTimeVal');
+const tMassVal = document.getElementById('tMassVal');
+const tImpulse = document.getElementById('tImpulse');
+const tDeltaV = document.getElementById('tDeltaV');
+const tDeltaP = document.getElementById('tDeltaP');
+
+function updateTheorem(){
+  const F = parseFloat(tForce.value);
+  const t = parseFloat(tTime.value);
+  const m = parseFloat(tMass.value);
+  tForceVal.textContent = F;
+  tTimeVal.textContent = t.toFixed(1);
+  tMassVal.textContent = m;
+  const J = F*t;
+  const dv = J/m;
+  tImpulse.textContent = J.toFixed(1) + ' N·s';
+  tDeltaV.textContent = dv.toFixed(2) + ' m/s';
+  tDeltaP.textContent = (m*dv).toFixed(1) + ' kg·m/s';
+}
+bindSliders(['tForce','tTime','tMass'], updateTheorem);
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+const quizPool = [
+  {q:"Which equation defines momentum?", opts:["p = m·v","J = F·Δt","F = m/a","v = p·m"], correct:0,
+   explain:"Momentum is the product of mass and velocity: p = m·v."},
+  {q:"What is the SI unit of momentum?", opts:["kg·m/s","N","N·s²","J"], correct:0,
+   explain:"Momentum is measured in kilogram-meters per second (kg·m/s)."},
+  {q:"Why is momentum a vector quantity?", opts:["Because velocity has direction","Because mass has direction","Because kilograms are vectors","Because time has direction"], correct:0,
+   explain:"Mass is scalar, but velocity has direction, so momentum also has direction."},
+  {q:"An object's momentum becomes larger when:", opts:["Its mass or speed increases","Its stopping time increases only","Its force becomes zero","Its direction is ignored"], correct:0,
+   explain:"Since p = m·v, increasing mass or the magnitude of velocity increases momentum."},
+  {q:"A 4-kg object moves at 3 m/s. What is its momentum?", opts:["12 kg·m/s","7 kg·m/s","1.33 kg·m/s","24 kg·m/s"], correct:0,
+   explain:"p = m·v = 4 × 3 = 12 kg·m/s."},
+  {q:"A 0.5-kg ball travels at 20 m/s. What is its momentum?", opts:["10 kg·m/s","40 kg·m/s","20.5 kg·m/s","0.025 kg·m/s"], correct:0,
+   explain:"p = 0.5 × 20 = 10 kg·m/s."},
+  {q:"If an object's mass doubles while velocity stays the same, its momentum:", opts:["Doubles","Halves","Stays the same","Becomes zero"], correct:0,
+   explain:"Momentum is directly proportional to mass."},
+  {q:"If an object's velocity triples while mass stays the same, its momentum:", opts:["Triples","Doubles","Becomes one-third","Does not change"], correct:0,
+   explain:"Momentum is directly proportional to velocity."},
+  {q:"If both mass and velocity double, momentum becomes:", opts:["Four times as large","Twice as large","Half as large","Unchanged"], correct:0,
+   explain:"p = m·v, so doubling both multiplies momentum by 2 × 2 = 4."},
+  {q:"In the momentum animation, a longer arrow represents:", opts:["Greater momentum","Less mass only","Shorter stopping time only","Zero velocity"], correct:0,
+   explain:"The arrow length is used to visualize the size of the momentum."},
+
+  {q:"Which equation defines impulse for a constant average force?", opts:["J = F·Δt","p = m·v","F = p·t","J = m/v"], correct:0,
+   explain:"Impulse equals average force multiplied by the time interval."},
+  {q:"What is the SI unit of impulse?", opts:["N·s","kg/s","N/m","m/s²"], correct:0,
+   explain:"Impulse is measured in newton-seconds (N·s)."},
+  {q:"Impulse describes the effect of:", opts:["A net force acting over time","Mass acting without motion","Velocity without mass","Distance divided by force"], correct:0,
+   explain:"Impulse depends on both the net force and how long it acts."},
+  {q:"Why is impulse a vector quantity?", opts:["Because force has direction","Because time has direction","Because seconds are vectors","Because mass always changes"], correct:0,
+   explain:"Impulse points in the same direction as the net force."},
+  {q:"A 100-N force acts for 0.5 s. What impulse is produced?", opts:["50 N·s","200 N·s","100.5 N·s","0.005 N·s"], correct:0,
+   explain:"J = F·Δt = 100 × 0.5 = 50 N·s."},
+  {q:"A 400-N force acts for 0.10 s. What is the impulse?", opts:["40 N·s","4 N·s","4000 N·s","410 N·s"], correct:0,
+   explain:"J = 400 × 0.10 = 40 N·s."},
+  {q:"For the same force, doubling the duration makes the impulse:", opts:["Twice as large","Half as large","Unchanged","Zero"], correct:0,
+   explain:"Impulse is directly proportional to the duration."},
+  {q:"For the same duration, tripling the force makes the impulse:", opts:["Three times as large","Nine times as large","One-third as large","Unchanged"], correct:0,
+   explain:"Impulse is directly proportional to force."},
+  {q:"On a force-versus-time graph, impulse is shown by:", opts:["The area under the curve","The slope only","The highest force value only","The time-axis intercept"], correct:0,
+   explain:"The area under a force–time graph equals impulse."},
+  {q:"Two force–time rectangles have equal areas. Their impulses are:", opts:["Equal","Always opposite","Always zero","Impossible to compare"], correct:0,
+   explain:"Equal area under the force–time graph means equal impulse."},
+
+  {q:"What does the impulse–momentum theorem state?", opts:["J = Δp","J = p²","F = p/t²","Δp = m/F"], correct:0,
+   explain:"The impulse applied to an object equals its change in momentum."},
+  {q:"Which two units are dimensionally equivalent?", opts:["N·s and kg·m/s","N and kg·m/s","J and N·s","m/s and N"], correct:0,
+   explain:"A newton-second is equivalent to a kilogram-meter per second."},
+  {q:"A 200 N·s impulse is applied to an object. Its momentum changes by:", opts:["200 kg·m/s","100 kg·m/s","400 kg·m/s","0 kg·m/s"], correct:0,
+   explain:"By J = Δp, a 200 N·s impulse causes a 200 kg·m/s momentum change."},
+  {q:"A 50-kg object receives a 200 N·s impulse. What is its change in velocity?", opts:["4 m/s","250 m/s","0.25 m/s","10,000 m/s"], correct:0,
+   explain:"Δv = J/m = 200/50 = 4 m/s."},
+  {q:"For the same impulse, a larger mass experiences:", opts:["A smaller change in velocity","A larger change in velocity","The same change in velocity","No momentum change"], correct:0,
+   explain:"Since Δv = J/m, increasing mass reduces the change in velocity."},
+
+  {q:"With the same braking force, an object with greater momentum needs:", opts:["More time to stop","Less time to stop","No time to stop","The same time in every case"], correct:0,
+   explain:"Stopping time follows t = p/F, so greater momentum requires more time for the same braking force."},
+  {q:"With mass and speed unchanged, increasing the braking force makes stopping time:", opts:["Shorter","Longer","Unchanged","Infinite"], correct:0,
+   explain:"A greater braking force changes momentum more quickly."},
+  {q:"Why does a padded mitt reduce the average force on a hand?", opts:["It increases stopping time","It increases the ball's momentum","It removes the impulse","It increases the ball's mass"], correct:0,
+   explain:"For the same momentum change, increasing stopping time lowers the average force."},
+  {q:"For the same incoming ball speed, both a bare hand and padded mitt must provide:", opts:["The same impulse","The same stopping time","The same average force","Different momentum changes"], correct:0,
+   explain:"The ball must undergo the same change in momentum, so the required impulse is the same."},
+  {q:"A ball is brought to rest without rebounding. Its final momentum is:", opts:["Zero","Equal to its initial momentum","Always negative","Equal to its mass"], correct:0,
+   explain:"At rest, velocity is zero, so final momentum is zero."}
+];
+
+const QUIZ_LENGTH = 20;
+let quizData = [];
+let currentQ = 0;
+let score = 0;
+let answers = [];
+
+function shuffledCopy(array){
+  const copy = array.slice();
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function prepareQuiz(){
+  quizData = shuffledCopy(quizPool)
+    .slice(0, QUIZ_LENGTH)
+    .map(question => {
+      const choices = question.opts.map((text, index) => ({
+        text,
+        isCorrect: index === question.correct
+      }));
+      const shuffledChoices = shuffledCopy(choices);
+      return {
+        q: question.q,
+        opts: shuffledChoices.map(choice => choice.text),
+        correct: shuffledChoices.findIndex(choice => choice.isCorrect),
+        explain: question.explain
+      };
+    });
+}
+
+const startQuizBtn = document.getElementById('startQuizBtn');
+const quizIntro = document.getElementById('quiz-intro');
+const quizBody = document.getElementById('quiz-body');
+const quizResult = document.getElementById('quiz-result');
+const qTitle = document.getElementById('qTitle');
+const qOptions = document.getElementById('qOptions');
+const qExplain = document.getElementById('qExplain');
+const nextBtn = document.getElementById('nextBtn');
+const quitBtn = document.getElementById('quitBtn');
+const retryBtn = document.getElementById('retryBtn');
+const progressFill = document.getElementById('progressFill');
+const quizProgressText = document.getElementById('quizProgressText');
+const quizScoreText = document.getElementById('quizScoreText');
+
+function startQuiz(){
+  prepareQuiz();
+  currentQ = 0; score = 0; answers = [];
+  quizIntro.style.display='none';
+  quizResult.style.display='none';
+  quizBody.style.display='block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const data = quizData[currentQ];
+  qTitle.textContent = (currentQ+1) + ". " + data.q;
+  qOptions.innerHTML = '';
+  qExplain.style.display = 'none';
+  qExplain.textContent = '';
+  nextBtn.disabled = true;
+  quizProgressText.textContent = `Question ${currentQ+1} / ${quizData.length}`;
+  quizScoreText.textContent = `Score: ${score}`;
+  progressFill.style.width = ((currentQ)/quizData.length*100) + '%';
+
+  data.opts.forEach((opt, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.addEventListener('click', ()=>selectAnswer(idx));
+    qOptions.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx){
+  const data = quizData[currentQ];
+  const opts = qOptions.querySelectorAll('.option');
+  opts.forEach(o=>o.disabled = true);
+  const isCorrect = idx === data.correct;
+  opts[idx].classList.add(isCorrect ? 'correct' : 'incorrect');
+  if(!isCorrect){ opts[data.correct].classList.add('correct'); }
+  if(isCorrect) score++;
+  answers.push({q:data.q, chosen:data.opts[idx], correctAns:data.opts[data.correct], isCorrect});
+  qExplain.textContent = data.explain;
+  qExplain.style.display = 'block';
+  nextBtn.disabled = false;
+  quizScoreText.textContent = `Score: ${score}`;
+  progressFill.style.width = ((currentQ+1)/quizData.length*100) + '%';
+}
+
+nextBtn.addEventListener('click', ()=>{
+  currentQ++;
+  if(currentQ >= quizData.length){
+    showResults();
+  } else {
+    renderQuestion();
+  }
+});
+
+quitBtn.addEventListener('click', ()=>{
+  quizBody.style.display='none';
+  quizIntro.style.display='block';
+});
+
+function showResults(){
+  quizBody.style.display='none';
+  quizResult.style.display='block';
+  document.getElementById('finalScore').textContent = `${score} / ${quizData.length}`;
+  let verdict = '';
+  const pct = score/quizData.length;
+  if(pct === 1) verdict = "Perfect. Newton would nod approvingly.";
+  else if(pct >= 0.8) verdict = "Strong grasp of impulse and momentum.";
+  else if(pct >= 0.6) verdict = "Solid foundation — revisit the theorem section.";
+  else verdict = "Worth another pass through the review above.";
+  document.getElementById('finalVerdict').textContent = verdict;
+
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '';
+  answers.forEach((a, i)=>{
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    div.innerHTML = `<span class="tag ${a.isCorrect ? 'ok' : 'no'}">${a.isCorrect ? 'CORRECT' : 'MISSED'}</span>
+      <strong>${i+1}. ${a.q}</strong><br>
+      <span style="color:var(--ink-soft); font-size:13.5px;">Your answer: ${a.chosen}${a.isCorrect ? '' : ' · Correct: ' + a.correctAns}</span>`;
+    reviewList.appendChild(div);
+  });
+}
+
+startQuizBtn.addEventListener('click', startQuiz);
+retryBtn.addEventListener('click', startQuiz);
+</script>
+</body>
+</html>
